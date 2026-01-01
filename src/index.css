@@ -1,9 +1,0 @@
-@theme {
-  /* You can add custom colors here later if you want */
-}
-
-@import "tailwindcss";
-
-html {
-  scroll-behavior: smooth;
-}
