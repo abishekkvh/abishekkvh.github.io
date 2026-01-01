@@ -8,5 +8,5 @@ export default defineConfig({
     tailwindcss(), // 2. Add Tailwind to plugins
   ],
   // Keep your base if you are deploying to GitHub, or remove it for local testing
-  base: '/abishek-portfolio-vite/', 
+  base: '/', 
 })
