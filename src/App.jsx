@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { 
   Film, Palette, Hash, PenTool, Video, UserCheck, 
   Mail, Instagram, Linkedin, MapPin, Send, Menu, X, ArrowRight,
-  Code, Layout, Smartphone, Database, Server, Globe, CheckCircle2
+  Code, Layout, Smartphone, Database, Server, Globe, CheckCircle2, Check
 } from 'lucide-react';
-
+import emailjs from '@emailjs/browser';
 import image from './assets/Abishek.jpg';
 
 // --- SUB-COMPONENTS ---
@@ -86,6 +86,27 @@ const SkillItem = ({ name, level }) => (
 
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [sent, setSent] = useState(false);
+
+
+  const sendEmail = (e) => {
+  e.preventDefault();
+
+  emailjs.sendForm(
+    'service_65doc8a',
+    'template_dz2sa9u',
+    e.target,
+    'pDPnV4qgNgCRTtj2q'
+  ).then( () => {
+    setSent(true)
+
+    setTimeout(() => {
+      setSent(false);
+      e.target.reset();   // reset form fields
+    }, 3000)
+  });
+};
+
 
   return (
     <div className="font-sans text-gray-800 scroll-smooth selection:bg-blue-100">
@@ -138,11 +159,20 @@ const Portfolio = () => {
             </div>
           </div>
           <div className="md:w-2/5 mt-16 md:mt-0 flex justify-center relative">
-            <div className="w-72 h-72 md:w-96 md:h-96 rounded-3xl bg-blue-600 rotate-6 absolute -z-10 opacity-10"></div>
-            <img 
-              src={image}
-              alt="Abishek" 
-              className="w-72 h-72 md:w-96 md:h-96 rounded-3xl object-cover shadow-2xl transition-all duration-700"
+
+            {/* Ambient glow */}
+            <div className="absolute w-[360px] h-[360px] md:w-[460px] md:h-[460px] bg-blue-500/20 blur-[120px] rounded-full -z-10"></div>
+
+            {/* floating glass ring */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-[330px] h-[330px] md:w-[430px] md:h-[430px] rounded-[3rem] border border-white/20 backdrop-blur-xl bg-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.25)]"></div>
+            </div>
+
+            {/* your image */}
+            <img
+            src={image}
+            alt="Abishek"
+            className="relative w-72 h-72 md:w-96 md:h-96 object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.5)] hover:scale-105 transition-all duration-700"
             />
           </div>
         </div>
@@ -265,19 +295,35 @@ const Portfolio = () => {
           </div>
           <div className="flex flex-col lg:flex-row gap-12 max-w-6xl mx-auto">
             <div className="lg:w-3/5">
-              <form className="space-y-6">
+              <form onSubmit={sendEmail} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-gray-700 font-bold mb-2">Name</label>
-                    <input type="text" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
+                    <input name="name" type="text" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" required />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-bold mb-2">Email</label>
-                    <input type="email" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
+                    <input name="email" type="email" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" required />
                   </div>
                 </div>
-                <textarea rows="6" placeholder="Project Details" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
-                <button type="submit" className="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg">Send Message</button>
+                <textarea name="message" rows="6" placeholder="Project Details" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" required></textarea>
+                <button
+  type="submit"
+  disabled={sent}
+  className={`px-10 py-4 rounded-xl font-bold transition-all duration-500 shadow-lg flex items-center justify-center gap-2
+  ${sent ? "bg-green-600 scale-105" : "bg-blue-600 hover:bg-blue-700"}
+  text-white`}
+>
+  {sent ? (
+    <>
+      <Check size={22} className="opacity-0 animate-fade-in" />
+      Sent Successfully
+    </>
+  ) : (
+    "Send Message"
+  )}
+</button>
+
               </form>
             </div>
             <div className="lg:w-2/5">
